@@ -1,0 +1,69 @@
+﻿@page "/"
+
+
+<h3>SitePlan</h3>
+
+<svg width="1920" height="1080" style="border:solid; border-color: black; border-width:3px"
+     @onmousedown="MouseDownHandler"
+     @onmouseup="MouseUpHandler"
+     @onmousemove="MouseMoveHandler">
+    @foreach (Line line in LineList)
+    {
+        <line @key="@line"
+              x1="@line.Start.X"
+              y1="@line.Start.Y"
+              x2="@line.End.X"
+              y2="@line.End.Y"
+              stroke="black"
+              stroke-width="2"/>
+    }
+</svg>
+
+@code {
+    public class Coordinate
+    {
+        public double X { get; set; }
+        public double Y { get; set; }
+    }
+    public class Line
+    {
+        public Coordinate Start = new();
+        public Coordinate End = new();
+    }
+
+    private List<Line> LineList = new();
+    private Line line;
+    private Coordinate lastClickPosition;
+    private bool isMouseDown = false;
+
+    private void MouseDownHandler(MouseEventArgs args)
+    {
+        Coordinate mousePosition = new()
+        {
+            X = args.OffsetX,
+            Y = args.OffsetY
+        };
+        line = new Line();
+        LineList.Add(line);
+        line.Start = mousePosition;
+        line.End = mousePosition;
+        isMouseDown = true;
+    }
+    private void MouseUpHandler(MouseEventArgs args)
+    {
+        isMouseDown = false;
+    }
+    private void MouseMoveHandler(MouseEventArgs args)
+    {
+        if (isMouseDown)
+        {
+            Coordinate mousePosition = new()
+            {
+                X = args.OffsetX,
+                Y = args.OffsetY
+            };
+            line.End = mousePosition;
+        }
+    }
+}
+
